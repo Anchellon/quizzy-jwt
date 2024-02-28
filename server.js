@@ -48,7 +48,8 @@ app.use("/logout", require("./routes/logout"));
 
 // jUST TESTING  WITH OUTV VERIFICATION
 app.use("/api/quiz/", require("./routes/api/quiz"));
-app.use(verifyJWT);
+app.use("/api/question/", require("./routes/api/question"));
+// app.use(verifyJWT);
 // app.use("/api/quiz/", require("./routes/api/quiz"));
 
 app.all("*", (req, res) => {

@@ -1,7 +1,25 @@
 const Quiz = require("../model/Quiz");
-// const Question = require("../models/Question");
+const Question = require("../model/Question");
 const { body, validationResult } = require("express-validator");
 
+/** get a list of all quizes by a particular user  */
+exports.index = (req, res, next) => {
+    // get a list of all quizes by a particular user
+    resObj = {};
+    Quiz.find({})
+        .then((quizArray) => {
+            if (quizArray) {
+                resObj.quizzes = quizArray;
+            }
+            resObj.message = "Quiz List for the user";
+            res.status(200).send(resObj);
+        })
+        .catch((error) => {
+            //When there are errors We handle them here
+            console.log(err);
+            res.send(400, "Bad Request");
+        });
+};
 /**
  * Creating an empty quiz
  * Testing Complete
@@ -51,3 +69,43 @@ exports.quiz_create_postMethod = [
             });
     },
 ];
+
+exports.quiz_Info_getMethod = (req, res) => {
+    let resObj = {};
+    Quiz.findById(req.params.id)
+        .then((quiz) => {
+            // For the quiz find all relevant details including all questions and their corresponding
+            resObj.quiz = quiz;
+            Question.find({ quiz: req.params.id })
+                .then((qns) => {
+                    resObj.questions = qns;
+                    res.status(200).send(resObj);
+                })
+                .catch((error) => {
+                    //When there are errors We handle them here
+                    console.log(err);
+                    res.send(400, "Bad Request");
+                });
+        })
+        .catch((error) => {
+            //When there are errors We handle them here
+            console.log(error);
+            res.send(400, "Bad Request");
+        });
+};
+exports.quiz_deleteMethod = (req, res, next) => {
+    console.log(req.params);
+    console.log("hi");
+    Quiz.findOne({ _id: req.params.id })
+        .then(async (val) => {
+            let id = await val.deleteOne();
+            // console.log(id);
+            res.status(204).send({
+                msg: "Successfully deleted",
+            });
+        })
+        .catch((err) => {
+            console.log(`caught the error: ${err}`);
+            return res.status(500).json(err);
+        });
+};
