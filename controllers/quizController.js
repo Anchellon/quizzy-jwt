@@ -109,3 +109,29 @@ exports.quiz_deleteMethod = (req, res, next) => {
             return res.status(500).json(err);
         });
 };
+exports.quiz_TestInfo_getMethod = (req, res) => {
+    let resObj = {};
+    console.log(req.params.id);
+    Quiz.findById(req.params.id)
+        .select("-updatedAt -createdAt -__v")
+        .then((quiz) => {
+            // For the quiz find all relevant details including all questions and their corresponding
+            resObj.quiz = quiz;
+            Question.find({ quiz: req.params.id })
+                .select("-correctAnswer -updatedAt -createdAt -__v")
+                .then((qns) => {
+                    resObj.questions = qns;
+                    res.status(200).send(resObj);
+                })
+                .catch((error) => {
+                    //When there are errors We handle them here
+                    console.log(err);
+                    res.send(400, "Bad Request");
+                });
+        })
+        .catch((error) => {
+            //When there are errors We handle them here
+            console.log(error);
+            res.send(400, "Bad Request");
+        });
+};

@@ -20,4 +20,8 @@ router.get("/:id", quiz_controller.quiz_Info_getMethod);
 // router.get("/:qzid/questions", question_controller.question_info_getMethod);
 
 // router.delete("/question/:qzid", question_controller.question_deleteMethod);
+
+// Test view api to get test info!
+router.get("/student/:id", quiz_controller.quiz_TestInfo_getMethod);
+
 module.exports = router;
